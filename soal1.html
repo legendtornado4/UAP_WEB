@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dokumen untuk UAP</title>
+  </head>
+  <body>
+    <table class="kasir">
+      <tr>
+        <th>Kode</th>
+        <th>Barang</th>
+        <th>Harga</th>
+      </tr>
+      <tr class="barang_a">
+        <th>001</th>
+        <th>Barang A</th>
+        <th>10.000</th>
+      </tr>
+      <tr class="barang_b">
+        <th>002</th>
+        <th>Barang B</th>
+        <th>20.000</th>
+      </tr>
+      <tr class="barang_c">
+        <th>003</th>
+        <th>Barang C</th>
+        <th>30.000</th>
+      </tr>
+    </table>
+
+    <form id="kasir-form">
+      <label for="kodeBarang">Kode Barang:</label>
+      <input type="number" id="kodeBarang" name="kodeBarang" required />
+      <br />
+      <label for="jumlahBarang">Jumlah Barang:</label>
+      <input type="number" id="jumlahBarang" name="jumlahBarang" required />
+      <br />
+      <input type="submit" value="Submit" />
+    </form>
+    <h2>Payment</h2>
+    <form id="payment-form">
+      <label for="cash">Cash:</label>
+      <input type="number" id="cash" name="cash" required />
+      <br />
+      <input type="submit" value="Pay" />
+    </form>
+    <script>
+      const ITEMS = {
+        1: 10000,
+        2: 20000,
+        3: 30000,
+      };
+
+      function calculate_total(order) {
+        let total = 0;
+        for (let i = 0; i < order.length; i++) {
+          let item = order[i].item;
+          let quantity = order[i].quantity;
+          total += ITEMS[item] * quantity;
+        }
+        return total;
+      }
+
+      function handle_submit(event) {
+        event.preventDefault();
+        let order = [];
+        let kodeBarang = document.querySelector("#kodeBarang").value;
+        let jumlahBarang = document.querySelector("#jumlahBarang").value;
+        order.push({ item: kodeBarang, quantity: jumlahBarang });
+        let total = calculate_total(order);
+        document.querySelector("#total-label").innerText = `Total: $${total}`;
+      }
+
+      function handle_payment(event) {
+        event.preventDefault();
+        let cash = parseInt(document.querySelector("#cash").value);
+        let total = parseInt(
+          document.querySelector("#total-label").innerText.split("$")[1]
+        );
+        let change = cash - total;
+        if (change >= 0) {
+          alert(`Total: $${total}. Change: $${change}`);
+        } else {
+          alert(`Total: $${total}. You need to pay $${-change} more`);
+        }
+      }
+
+      document
+        .querySelector("#kasir-form")
+        .addEventListener("submit", handle_submit);
+      document
+        .querySelector("#payment-form")
+        .addEventListener("submit", handle_payment);
+    </script>
+  </body>
+</html>
